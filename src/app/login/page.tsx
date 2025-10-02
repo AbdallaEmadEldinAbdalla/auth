@@ -34,6 +34,7 @@ export default function LoginPage() {
 
             if (response.ok) {
                 const data = await response.json();
+                console.log('Auth token created successfully:', data);
 
                 // Store auth token in localStorage for cross-domain access
                 localStorage.setItem('auth_token', data.authToken);
@@ -43,10 +44,13 @@ export default function LoginPage() {
                 // Also set in sessionStorage for immediate access
                 sessionStorage.setItem('auth_token', data.authToken);
 
+                console.log('Token stored, redirecting to app...');
                 // Redirect to main app
                 window.location.href = 'https://app.arya.services';
             } else {
-                setError('Failed to create session');
+                const errorData = await response.json();
+                console.error('Auth token creation failed:', response.status, errorData);
+                setError(`Failed to create session: ${errorData.error || 'Unknown error'}`);
             }
         } catch (error: unknown) {
             setError(error instanceof Error ? error.message : 'Login failed');
