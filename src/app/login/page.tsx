@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
@@ -9,6 +9,17 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [redirectUrl, setRedirectUrl] = useState('https://app.arya.services');
+
+    useEffect(() => {
+        // Get redirect URL from query parameter
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
+        if (redirect) {
+            setRedirectUrl(decodeURIComponent(redirect));
+            console.log('Login: Will redirect to:', decodeURIComponent(redirect));
+        }
+    }, []);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -36,9 +47,9 @@ export default function LoginPage() {
                 const data = await response.json();
                 console.log('Session cookie created successfully:', data);
 
-                console.log('Redirecting to app...');
-                // Redirect to main app - cookie will be shared automatically
-                window.location.href = 'https://app.arya.services';
+                console.log('Redirecting to:', redirectUrl);
+                // Redirect back to where the user came from
+                window.location.href = redirectUrl;
             } else {
                 const errorData = await response.json();
                 console.error('Session creation failed:', response.status, errorData);
