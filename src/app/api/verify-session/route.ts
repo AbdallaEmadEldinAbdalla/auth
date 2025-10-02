@@ -3,10 +3,13 @@ import { adminAuth } from '@/lib/firebase-admin';
 
 export async function GET(request: NextRequest) {
     try {
+        const origin = request.headers.get('origin') || '*';
+        
         // Get the session cookie from the request
         const sessionCookie = request.cookies.get('__session')?.value;
 
         console.log('Verify-session: Checking for session cookie:', !!sessionCookie);
+        console.log('Verify-session: Request origin:', origin);
 
         if (!sessionCookie) {
             return NextResponse.json(
@@ -14,10 +17,10 @@ export async function GET(request: NextRequest) {
                 {
                     status: 401,
                     headers: {
-                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Origin': origin,
                         'Access-Control-Allow-Credentials': 'true',
-                        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                     },
                 }
             );
@@ -38,38 +41,40 @@ export async function GET(request: NextRequest) {
             },
             {
                 headers: {
-                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Origin': origin,
                     'Access-Control-Allow-Credentials': 'true',
-                    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                 },
             }
         );
     } catch (error) {
         console.error('Verify-session: Session verification failed:', error);
+        const origin = request.headers.get('origin') || '*';
         return NextResponse.json(
             { valid: false, error: 'Invalid session' },
             {
                 status: 401,
                 headers: {
-                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Origin': origin,
                     'Access-Control-Allow-Credentials': 'true',
-                    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                 },
             }
         );
     }
 }
 
-export async function OPTIONS() {
+export async function OPTIONS(request: NextRequest) {
+    const origin = request.headers.get('origin') || '*';
     return new NextResponse(null, {
         status: 200,
         headers: {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': origin,
             'Access-Control-Allow-Credentials': 'true',
-            'Access-Control-Allow-Methods': 'GET, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
     });
 }
