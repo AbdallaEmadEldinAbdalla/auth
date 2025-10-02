@@ -23,8 +23,8 @@ export default function LoginPage() {
             // Get ID token
             const idToken = await user.getIdToken();
 
-            // Send to our API to create auth token
-            const response = await fetch('/api/auth-token', {
+            // Send to our API to create auth token (using simple version for testing)
+            const response = await fetch('/api/auth-token-simple', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
