@@ -23,8 +23,8 @@ export default function LoginPage() {
             // Get ID token
             const idToken = await user.getIdToken();
 
-            // Send to our API to create auth token (using simple version for testing)
-            const response = await fetch('/api/auth-token-simple', {
+            // Send to our API to create Firebase session cookie
+            const response = await fetch('/api/set-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -34,22 +34,14 @@ export default function LoginPage() {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Auth token created successfully:', data);
+                console.log('Session cookie created successfully:', data);
 
-                // Store auth token in localStorage for cross-domain access
-                localStorage.setItem('auth_token', data.authToken);
-                localStorage.setItem('auth_authenticated', 'true');
-                localStorage.setItem('auth_timestamp', Date.now().toString());
-
-                // Also set in sessionStorage for immediate access
-                sessionStorage.setItem('auth_token', data.authToken);
-
-                console.log('Token stored, redirecting to app...');
-                // Redirect to main app with token as URL parameter
-                window.location.href = `https://app.arya.services?auth_token=${encodeURIComponent(data.authToken)}`;
+                console.log('Redirecting to app...');
+                // Redirect to main app - cookie will be shared automatically
+                window.location.href = 'https://app.arya.services';
             } else {
                 const errorData = await response.json();
-                console.error('Auth token creation failed:', response.status, errorData);
+                console.error('Session creation failed:', response.status, errorData);
                 setError(`Failed to create session: ${errorData.error || 'Unknown error'}`);
             }
         } catch (error: unknown) {
