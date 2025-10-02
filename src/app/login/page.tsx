@@ -3,14 +3,12 @@
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const router = useRouter();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -50,8 +48,8 @@ export default function LoginPage() {
             } else {
                 setError('Failed to create session');
             }
-        } catch (error: any) {
-            setError(error.message || 'Login failed');
+        } catch (error: unknown) {
+            setError(error instanceof Error ? error.message : 'Login failed');
         } finally {
             setLoading(false);
         }

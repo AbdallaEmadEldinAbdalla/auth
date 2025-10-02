@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth } from '@/lib/firebase-admin';
-import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {
     try {
@@ -30,13 +29,12 @@ export async function POST(request: NextRequest) {
         };
 
         console.log('Setting cookie with options:', cookieOptions);
-        cookies().set('__session', sessionCookie, cookieOptions);
-
+        
         const response = NextResponse.json({ success: true, user: decoded });
-
-        // Also set the cookie in the response headers for debugging
+        
+        // Set the cookie in the response headers
         response.cookies.set('__session', sessionCookie, cookieOptions);
-
+        
         return response;
     } catch (error) {
         console.error('Error setting session:', error);
