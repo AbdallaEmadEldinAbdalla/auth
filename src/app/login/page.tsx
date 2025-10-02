@@ -45,8 +45,8 @@ export default function LoginPage() {
                 sessionStorage.setItem('auth_token', data.authToken);
 
                 console.log('Token stored, redirecting to app...');
-                // Redirect to main app
-                window.location.href = 'https://app.arya.services';
+                // Redirect to main app with token as URL parameter
+                window.location.href = `https://app.arya.services?auth_token=${encodeURIComponent(data.authToken)}`;
             } else {
                 const errorData = await response.json();
                 console.error('Auth token creation failed:', response.status, errorData);
