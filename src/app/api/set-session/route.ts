@@ -17,24 +17,22 @@ export async function POST(request: NextRequest) {
         const sessionCookie = await adminAuth.createSessionCookie(idToken, { expiresIn });
 
         // Set HttpOnly cookie for all subdomains
-        // Note: .local domain might not work in all browsers for localhost development
-        // For localhost, we'll try without domain first, then .localhost as fallback
         const cookieOptions = {
-            domain: undefined,   // Let browser handle domain for localhost
+            domain: '.arya.services',   // 🔑 allows sharing with app.arya.services + admin.arya.services
             httpOnly: true,
-            secure: false,      // ❌ disable for local dev, enable in prod (https)
+            secure: true,      // ✅ enable for production (https)
             path: '/',
             maxAge: expiresIn / 1000,
             sameSite: 'lax' as const,
         };
 
         console.log('Setting cookie with options:', cookieOptions);
-        
+
         const response = NextResponse.json({ success: true, user: decoded });
-        
+
         // Set the cookie in the response headers
         response.cookies.set('__session', sessionCookie, cookieOptions);
-        
+
         return response;
     } catch (error) {
         console.error('Error setting session:', error);

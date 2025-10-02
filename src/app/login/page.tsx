@@ -44,7 +44,7 @@ export default function LoginPage() {
                 sessionStorage.setItem('auth_token', data.authToken);
 
                 // Redirect to main app
-                window.location.href = 'http://app.local:3001';
+                window.location.href = 'https://app.arya.services';
             } else {
                 setError('Failed to create session');
             }

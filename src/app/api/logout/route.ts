@@ -5,9 +5,9 @@ export async function POST() {
         // Clear the session cookie
         const response = NextResponse.json({ success: true });
         response.cookies.set('__session', '', {
-            domain: '.local',
+            domain: '.arya.services',
             httpOnly: true,
-            secure: false, // local only
+            secure: true, // production HTTPS
             path: '/',
             maxAge: 0,     // expire now
         });
